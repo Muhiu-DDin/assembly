@@ -1,45 +1,82 @@
-dosseg 
-.model small 
-.data 
-msg1 db , "enter age$"
-list1 db , 50 dup(0)
+dosseg
+model small
+.stack 100h
+.data
+l1 db , 50 dup(0)
+.code
 
-.code 
 main proc 
-mov ax , @data 
-mov ds , ax 
+mov ax , @data
+mov ds , ax
 
-lea dx , msg1 
-mov ah , 9
-int 21h
-
-lea si ,  list1
-
+lea si , l1
 loop1:
-mov ah , 1 
-int 21h 
+call input 
 cmp al , 13 
-je doneAge 
-mov [si] , al
-inc si 
+je done
+mov [si] , al 
+inc si
 jmp loop1
 
-doneAge:
-lea si , list1
+done:
+lea si , l1 
 
-printLoop:
-mov dx , [si]
-cmp dx , 0
+move:
+cmp [si] , 0 
 je exit
+mov dx , [si]
+mov ah , 2
+int 21h
 inc si
-mov ah , 2 
-int 21h 
-jmp printLoop
+jmp move
 
 
 exit:
-mov ah , 4ch 
+mov  ah , 4ch 
 int 21h
 
 main endp 
+
+input proc
+mov ah , 1
+int 21h
+ret
+input endp
+
+end main
+
+; ----------------------
+; in the form of string
+
+dosseg
+model small
+.stack 100h
+.data
+list db , 5 dup("$")
+.code
+main proc
+mov ax , @data
+mov ds , ax
+
+lea si , list
+
+l1:
+mov ah , 1
+int 21h
+cmp al , 13
+je print
+mov [si] , al
+inc si
+jmp l1
+
+print:
+lea dx , list
+mov ah , 9 
+int 21h 
+
+exit:
+mov  ah , 4ch 
+int 21h
+
+main endp
 end main

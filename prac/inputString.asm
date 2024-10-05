@@ -21,14 +21,11 @@ loop1:
 mov ah , 1 
 int 21h 
 cmp al , 13
-; je doneName
 je print
 mov [si] , al 
 inc si 
 jmp loop1
 
-; doneName:
-; mov [si] , '$'
 
 print:
 lea dx , list1 
